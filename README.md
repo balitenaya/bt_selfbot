@@ -1,1 +1,11 @@
-# bt_selfbot
+# pip install thrift==0.9.3
+# pip install BeautifulSoup
+# pip install bs4
+# pip install gtts
+# pip install requests
+# pip install html5lib
+# pip install urllib
+# pip install goslate
+# pip install urllib3
+# pip install wikipedia
+# pip install ast
