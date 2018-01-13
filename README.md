@@ -1,2 +1,0 @@
-# bt_selfbot
-#  aaaa
