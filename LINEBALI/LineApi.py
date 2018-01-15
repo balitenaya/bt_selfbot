@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from Api import Poll, Talk, channel
-from lib.curve.ttypes import *
-import requests
-import shutil
-import json
+from libapi  import Poll, Talk, channel
+from libapi.ttypes import *
+import requests,shutil,json
 from random import randint
 
 def def_callback(str):
@@ -22,7 +20,7 @@ class LINE:
 
   def __init__(self):
     self.Talk = Talk()
-    self._session = requests.session()    
+    self._session = requests.session()
 
   def login(self, mail=None, passwd=None, cert=None, token=None, qr=False, callback=None):
     if callback is None:
@@ -39,22 +37,21 @@ class LINE:
     else:
       raise Exception("invalid arguments")
 
-
     self.authToken = self.Talk.authToken
     self.cert = self.Talk.cert
-
-    self.Poll = Poll(self.authToken)
-    #self.channel = channel.Channel(self.authToken)
-    #self.channel.login()
-    #self.channel_access_token = self.channel.channel_access_token
-    #self.token = self.channel.token
-    #self.obs_token = self.channel.obs_token
-    #self.refresh_token = self.channel.refresh_token
     self._headers = {
-              'X-Line-Application': 'CHROMEOS\t1.4.17\tChrome_OS\t1', 
+              'X-Line-Application': 'IOSIPAD\t7.18.0\tiPhone OS\t11.12.1', 
               'X-Line-Access': self.authToken, 
-              'User-Agent': 'Mozilla/5.0'
-    }
+              'User-Agent': 'Devpad/6.0'
+   }
+    self.Poll = Poll(self.authToken)
+    self.channel = channel.Channel(self.authToken)
+    self.channel.login()	
+    self.mid = self.channel.mid
+    self.channel_access_token = self.channel.channel_access_token
+    self.token = self.channel.token
+    self.obs_token = self.channel.obs_token
+    self.refresh_token = self.channel.refresh_token
 
 
   """User"""
@@ -82,27 +79,6 @@ class LINE:
         profile.pictureStatus = contact.pictureStatus
         self.updateDisplayPicture(profile.pictureStatus)
         return self.updateProfile(profile)
-        
-  def cloneNameProfile(self, mid):
-        contact = self.getContact(mid)
-        profile = self.getProfile()
-        profile.displayName = contact.displayName
-        self.updateDisplayPicture(profile.pictureStatus)
-        return self.updateProfile(profile)
-        
-  def cloneBioProfile(self, mid):
-        contact = self.getContact(mid)
-        profile = self.getProfile()
-        profile.statusMessage = contact.statusMessage
-        self.updateDisplayPicture(profile.pictureStatus)
-        return self.updateProfile(profile)
-        
-  def clonePictureProfile(self, mid):
-        contact = self.getContact(mid)
-        profile = self.getProfile()
-        profile.pictureStatus = contact.pictureStatus
-        self.updateDisplayPicture(profile.pictureStatus)
-        return self.updateProfile(profile) 
         
   def updateDisplayPicture(self, hash_id):
         return self.Talk.client.updateProfileAttribute(0, 8, hash_id)
@@ -132,7 +108,6 @@ class LINE:
         rst = t1 + text + t2
         M.text = rst.replace("\n", " ")
         return self.Talk.client.sendMessage(0, M)
-
 
   def sendMessage(self, messageObject):
         return self.Talk.client.sendMessage(0,messageObject)
@@ -176,7 +151,7 @@ class LINE:
 
         :param url: image url to send
         """
-        path = 'pythonLine.data'
+        path = 'tmp/pythonLine.data'
 
         r = requests.get(url, stream=True)
         if r.status_code == 200:
@@ -261,9 +236,9 @@ class LINE:
          self.sendVideo(to_, path)
       except Exception as e:
          raise e
-
+			
   def sendEvent(self, messageObject):
-        return self.Talk.client.sendEvent(0, messageObject)
+        return self._client.sendEvent(0, messageObject)
 
   def sendChatChecked(self, mid, lastMessageId):
         return self.Talk.client.sendChatChecked(0, mid, lastMessageId)
@@ -459,8 +434,8 @@ class LINE:
 
       prof = self.getProfile()
 
-      print("「 BT Self Bot 」")
-      print("Mid : " + prof.mid)
-      print("Name : " + prof.displayName)
-      print("AuthToken : " + self.authToken)
-      print("Cert : " + self.cert if self.cert is not None else "")
+      print("MikanBOT")
+      print("mid -> " + prof.mid)
+      print("name -> " + prof.displayName)
+      print("authToken -> " + self.authToken)
+      print("cert -> " + self.cert if self.cert is not None else "")
